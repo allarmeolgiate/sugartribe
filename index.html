@@ -54,8 +54,16 @@
 
   <div class="side">
     <div class="onair"><i></i> ON AIR</div>
-    <h2>SUGAR TRIBE RADIO</h2>
-    <p>LA TUA ENERGIA</p>
+    <div class="clock-card">
+      <div class="clock-icon">◷</div>
+      <div><div class="digital" id="clock">00:00:00</div><div class="date" id="date">VENERDÌ 18 SETTEMBRE 2026</div></div>
+    </div>
+    <h2 id="sideSong">SUGAR TRIBE RADIO</h2>
+    <p id="sideArtist">LA TUA ENERGIA</p>
+    <div class="side-contacts">
+      <a class="contact whatsapp" href="https://wa.me/393475137319" target="_blank" rel="noopener">💬 WHATSAPP <small>+39 347 513 7319</small></a>
+      <a class="contact email" href="mailto:radiosugarfree@gmail.com">✉ E-MAIL <small>radiosugarfree@gmail.com</small></a>
+    </div>
     <div class="volume">
       <span>🔊</span>
       <input id="volume" type="range" min="0" max="1" step=".01" value=".75">
@@ -71,7 +79,7 @@
 <section class="schedule" id="palinsesto">
   <div class="section-title">
     <div><span>▣</span><h2>PALINSESTO RADIOFONICO</h2></div>
-    <small>7 GIORNI • 24 ORE SU 24</small>
+    <small>7 GIORNI • 24 ORE SU 24 • OGGI: <strong id="todayName">VENERDÌ</strong></small>
   </div>
 
   <div class="schedule-toolbar">

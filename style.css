@@ -174,3 +174,15 @@ footer img{width:110px} footer b{color:var(--cyan)}
   .digital{font-size:34px}.editor-row{grid-template-columns:1fr 1fr}.editor-row label:nth-child(3),.editor-row label:nth-child(4){grid-column:1/-1}.remove{grid-column:2;justify-self:end}
   .admin-toolbar>*{width:100%!important}.admin-toolbar select{margin:0}
 }
+
+/* Orologio e contatti */
+.clock-card{display:flex;align-items:center;gap:10px;padding:12px;margin:10px 0;border:1px solid rgba(138,88,255,.65);border-radius:15px;background:linear-gradient(145deg,rgba(30,15,75,.8),rgba(6,5,30,.9));}
+.clock-icon{font-size:34px;color:#27f4ff;text-shadow:0 0 18px rgba(39,244,255,.55)}
+.digital{font-family:SFMono-Regular,Consolas,monospace;font-size:30px;font-weight:900;letter-spacing:-1px;background:linear-gradient(90deg,#27f4ff,#fff,#ff22d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.date{font-size:8px;color:#27f4ff;font-weight:900;letter-spacing:.7px;margin-top:3px}
+.side-contacts{display:grid;gap:7px;margin:10px 0}
+.contact{display:flex;align-items:center;gap:7px;padding:9px 10px;border-radius:10px;border:1px solid rgba(39,244,255,.3);font-size:9px;font-weight:900}
+.contact small{margin-left:auto;font-size:8px;color:#ddd}
+.whatsapp{border-color:rgba(81,255,153,.65);color:#51ff99}.email{border-color:rgba(255,34,212,.55);color:#ff5de0}
+#todayName{color:#27f4ff}
+@media(max-width:700px){.digital{font-size:27px}.contact small{font-size:8px}}
