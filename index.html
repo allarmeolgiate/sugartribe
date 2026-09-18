@@ -1,55 +1,129 @@
-<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07051a"><title>SUGAR TRIBE RADIO — La tua energia</title>
-  <link rel="stylesheet" href="style.css">
-</head><body>
-<header class="header" id="header"><a class="brand" href="#player"><img src="logo-sugar-tribe.png" alt="Sugar Tribe Radio"></a><button class="menu" id="menu">☰</button><nav class="nav"><a href="#player">HOME</a><a href="#palinsesto">PALINSESTO</a><a href="#player">PLAYER</a></nav><div class="onair"><i></i>ON AIR</div></header>
-<main class="wrap">
-<section class="hero" id="player">
-<div class="card track"><span class="eyebrow">NOW PLAYING</span><h1 id="song">SUGAR TRIBE RADIO</h1><p id="artist">La tua energia • musica non stop</p><div class="wave" id="wave"></div><div class="transport"><button class="btn" id="reload">↻</button><button class="btn play" id="play">▶ ASCOLTA</button><button class="btn" id="pause">❚❚</button></div><p class="status" id="status">PRONTO</p></div>
-<div class="card side"><div class="onair"><i></i>ON AIR</div><h2 id="sideSong">SUGAR TRIBE RADIO</h2><p id="sideArtist">La tua energia</p><div class="clock"><div class="digital" id="clock">00:00:00</div><div class="date" id="date"></div></div><div class="volume">🔊 <input id="volume" type="range" min="0" max="1" step=".01" value=".75"><b id="vol">75%</b></div></div>
-</section>
-<section class="schedule" id="palinsesto"><div class="section-head"><div><span class="eyebrow">PROGRAMMAZIONE</span><h2>PALINSESTO RADIOFONICO</h2></div><button class="btn" id="toggleSchedule">NASCONDI</button></div><div class="schedule-box" id="scheduleBox"><div class="days" id="days"></div><div class="rows" id="rows"></div></div></section>
-<section class="contacts"><div class="section-head"><div><span class="eyebrow">RESTIAMO IN CONTATTO</span><h2>CONTATTI</h2></div></div><div class="contact-grid"><a class="contact wa" href="https://wa.me/393475137319" target="_blank" rel="noopener">◉ WHATSAPP</a><a class="contact mail" href="mailto:radiosugarfree@gmail.com">✉ E-MAIL</a></div></section>
-</main><footer><img src="logo-sugar-tribe.png" alt="Sugar Tribe"><div>SUGAR TRIBE RADIO</div><b>LA TUA ENERGIA, SEMPRE CON TE!</b></footer>
-<button class="admin" id="admin">⚙</button>
-<div class="modal" id="modal" hidden><div class="modalbox"><button class="close" id="close">×</button><div id="login"><span class="eyebrow">CONTROL ROOM</span><h2>MODIFICA PALINSESTO</h2><input id="pwd" type="password" placeholder="Password"><button class="primary" id="loginBtn">ACCEDI</button><p id="err"></p></div><div id="editor" hidden><h2>MODIFICA PALINSESTO</h2><div class="adminbar"><select id="adminDay"></select><button id="add">＋ AGGIUNGI</button><button id="save">✓ SALVA</button></div><div id="editorList"></div></div></div></div>
-<audio id="radio" preload="none"></audio>
-<script>
-const STREAM_URL='http://eu8.fastcast4u.com:2682/;stream.mp3';
-const STREAM_PROXY='https://eu8.fastcast4u.com/stream/gigamarvi/stream.pls';
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07051a">
+<title>SUGAR TRIBE RADIO — La tua energia</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const DEFAULT={}; const shows=[['06:00 – 09:00','Good Morning SugarTribe','Marco & Giulia','MUSICA & ENERGIA'],['09:00 – 11:00','The Breakfast Show','Luca B.','HITS & NEWS'],['11:00 – 13:00','Feel Good Vibes','Sara','POP & DANCE'],['13:00 – 15:00','Urban Tribe','Alex','HIP HOP & R&B'],['15:00 – 17:00','Music Evolution','Martina','HOUSE & EDM'],['17:00 – 19:00','Sunset Vibes','Fabio','CHILL & LOUNGE'],['19:00 – 21:00','Rock Tribe','Diego','ROCK CLASSICS'],['21:00 – 23:00','Night Vibes','Claudia','ELECTRONIC'],['23:00 – 01:00','Deep House Journey','Stefano','DEEP HOUSE'],['01:00 – 06:00','Notte SugarTribe','Max','ELECTRONIC & CHILL']];['LUNEDÌ','MARTEDÌ','MERCOLEDÌ','GIOVEDÌ','VENERDÌ','SABATO','DOMENICA'].forEach(d=>DEFAULT[d]=shows.map(x=>[...x]));
-let schedule=JSON.parse(localStorage.getItem('sugarTribeScheduleV7')||'null')||DEFAULT; let selected=today();
-const $=id=>document.getElementById(id); function today(){return ['DOMENICA','LUNEDÌ','MARTEDÌ','MERCOLEDÌ','GIOVEDÌ','VENERDÌ','SABATO'][new Date().getDay()]};
-function renderDays(){const box=$('days');box.innerHTML='';Object.keys(schedule).forEach(d=>{let b=document.createElement('button');b.className='day '+(d===selected?'active':'');b.textContent=d;b.onclick=()=>{selected=d;renderDays();renderRows()};box.appendChild(b)})}
-function mins(s){let p=s.split(':').map(Number);return p[0]*60+p[1]};function onair(s){let m=s[0].match(/(\d\d?:\d\d).*?(\d\d?:\d\d)/);if(!m)return false;let a=mins(m[1]),b=mins(m[2]),n=new Date(),c=n.getHours()*60+n.getMinutes();return b>a?c>=a&&c<b:c>=a||c<b}
-function renderRows(){let box=$('rows');box.innerHTML='';let cur=today(),arr=schedule[selected]||[];arr.forEach((s,i)=>{let live=selected===cur&&onair(s);let r=document.createElement('div');r.className='row'+(live?' live':'');r.innerHTML='<div class="time">'+s[0]+'</div><div class="prog">'+s[1]+'<small>Con '+s[2]+'</small></div><div class="genre">'+s[3]+'</div>'+(live?'<div class="badge">IN ONDA</div>':'');box.appendChild(r)})}
-function clock(){let d=new Date();$('clock').textContent=d.toLocaleTimeString('it-IT',{hour12:false});$('date').textContent=d.toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}).toUpperCase();if(selected!==today()){selected=today();renderDays()}renderRows()}setInterval(clock,1000);clock();
-function bars(id,n){const box=$(id);if(!box)return;for(let i=0;i<n;i++){let e=document.createElement('i');e.style.height=(4+Math.random()*30)+'px';e.style.animationDelay=(-Math.random())+'s';box.appendChild(e)}}bars('wave',55);
-const radio=$('radio'),status=$('status');
-radio.src=STREAM_URL;radio.volume=.75;
-async function start(){
-  status.textContent='CONNESSIONE...';
-  try{
-    if(!radio.src) radio.src=STREAM_URL;
-    await radio.play();
-    status.textContent='LIVE';
-  }catch(e){
-    status.textContent='ERRORE STREAM — PROVA A RIAPRIRE IL FILE';
-    console.error('SUGAR TRIBE STREAM ERROR',e);
-  }
-}
-$('play').onclick=()=>{if(radio.paused) start(); else radio.pause()};
-$('pause').onclick=()=>radio.pause();
-$('reload').onclick=()=>{radio.pause();radio.src=STREAM_URL+'?nocache='+Date.now();radio.load();start()};
-$('volume').oninput=e=>{radio.volume=+e.target.value;$('vol').textContent=Math.round(radio.volume*100)+'%'};
-radio.onplaying=()=>status.textContent='LIVE';
-radio.onpause=()=>{if(!radio.ended)status.textContent='PAUSA'};
-radio.onerror=()=>status.textContent='ERRORE STREAM — IL SERVER NON ACCETTA IL COLLEGAMENTO';
-// Metadata opzionale: se il server abilita CORS, aggiorna il titolo; il player non dipende da questa funzione.
-async function metadata(){for(const u of ['https://eu8.fastcast4u.com/status-json.xsl','https://eu8.fastcast4u.com/stats?sid=1&json=1'])try{let r=await fetch(u,{cache:'no-store'});if(!r.ok)continue;let d=await r.json();let s=d?.icestats?.source||d?.source;if(Array.isArray(s))s=s[0];let t=s?.title||s?.songtitle||s?.current_song;if(t){let p=t.split(/\s+-\s+/);let a=p.length>1?p[0]:'Sugar Tribe Radio',song=p.length>1?p.slice(1).join(' - '):t;['song','sideSong'].forEach(id=>{if($(id))$(id).textContent=song});['artist','sideArtist'].forEach(id=>{if($(id))$(id).textContent=a});return}}catch(e){}}metadata();setInterval(metadata,15000);
-$('toggleSchedule').onclick=()=>{let b=$('scheduleBox'),hide=b.style.display==='none';b.style.display=hide?'block':'none';$('toggleSchedule').textContent=hide?'NASCONDI':'MOSTRA PALINSESTO'};
-$('menu').onclick=()=>$('header').classList.toggle('open');document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>{ $('header').classList.remove('open') });
-// Admin locale
-const modal=$('modal');$('admin').onclick=()=>modal.hidden=false;$('close').onclick=()=>modal.hidden=true;$('loginBtn').onclick=()=>{if($('pwd').value==='SugarTribe2026'){$('login').hidden=true;$('editor').hidden=false;setupAdmin()}else $('err').textContent='Password non corretta'};function setupAdmin(){let s=$('adminDay');s.innerHTML='';Object.keys(schedule).forEach(d=>{let o=document.createElement('option');o.value=d;o.textContent=d;s.appendChild(o)});s.value=selected;renderEditor()}function renderEditor(){let b=$('editorList');b.innerHTML='';(schedule[$('adminDay').value]||[]).forEach(addEditor)}function addEditor(s=['06:00 – 08:00','Nuovo programma','','MUSICA']){let r=document.createElement('div');r.className='adminrow';['ORARIO','PROGRAMMA','SPEAKER','GENERE'].forEach((l,i)=>{let x=document.createElement('label');x.innerHTML=l+'<input data-i="'+i+'" value="'+String(s[i]||'').replaceAll('"','&quot;')+'">';r.appendChild(x)});let q=document.createElement('button');q.textContent='×';q.onclick=()=>r.remove();r.appendChild(q);$('editorList').appendChild(r)}$('adminDay').onchange=renderEditor;$('add').onclick=()=>addEditor();$('save').onclick=()=>{let d=$('adminDay').value;schedule[d]=[...document.querySelectorAll('.adminrow')].map(r=>[0,1,2,3].map(i=>r.querySelector('[data-i="'+i+'"]').value));localStorage.setItem('sugarTribeScheduleV7',JSON.stringify(schedule));selected=d;renderDays();renderRows();alert('Palinsesto salvato')};renderDays();renderRows();
-</script>  <script src="script.js"></script>
-</body></html>
+<header class="header">
+  <a class="brand" href="#player" aria-label="Sugar Tribe Radio">
+    <img src="logo-sugar-tribe.png" alt="Sugar Tribe Radio">
+  </a>
+
+  <nav>
+    <a href="#player">HOME</a>
+    <a href="#palinsesto">PALINSESTO</a>
+    <a href="#player">PLAYER</a>
+    <a href="#footer">CONTATTI</a>
+  </nav>
+
+  <div class="live-pill"><span></span> ON AIR</div>
+  <button class="menu-toggle" id="menuToggle" aria-label="Apri menu">☰</button>
+</header>
+
+<main>
+<section class="player-card" id="player">
+  <div class="visualizer">
+    <div class="neon-ring ring-a"></div>
+    <div class="neon-ring ring-b"></div>
+    <div class="logo-disc"><img src="logo-sugar-tribe.png" alt="Sugar Tribe"></div>
+    <div class="eq" id="eq"></div>
+  </div>
+
+  <div class="track">
+    <div class="eyebrow">NOW PLAYING</div>
+    <h1 id="song">SUGAR TRIBE RADIO</h1>
+    <p id="artist">La tua energia • musica non stop</p>
+    <div class="wave" id="wave"></div>
+  </div>
+
+  <div class="transport">
+    <button id="reload" class="small" title="Ricarica stream">↻</button>
+    <button id="play" class="play" title="Play / Pausa">▶</button>
+    <button id="pause" class="small" title="Pausa">❚❚</button>
+  </div>
+
+  <div class="side">
+    <div class="onair"><i></i> ON AIR</div>
+    <h2>SUGAR TRIBE RADIO</h2>
+    <p>LA TUA ENERGIA</p>
+    <div class="volume">
+      <span>🔊</span>
+      <input id="volume" type="range" min="0" max="1" step=".01" value=".75">
+      <b id="vol">75%</b>
+    </div>
+    <div class="stats">
+      <span>STREAM<strong>96 kbps</strong></span>
+      <span>STATUS<strong id="status">READY</strong></span>
+    </div>
+  </div>
+</section>
+
+<section class="schedule" id="palinsesto">
+  <div class="section-title">
+    <div><span>▣</span><h2>PALINSESTO RADIOFONICO</h2></div>
+    <small>7 GIORNI • 24 ORE SU 24</small>
+  </div>
+
+  <div class="schedule-toolbar">
+    <div class="days" id="days"></div>
+    <button class="admin-open" id="openAdmin">⚙ MODIFICA PALINSESTO</button>
+  </div>
+
+  <div class="schedule-list" id="schedule"></div>
+</section>
+</main>
+
+<footer id="footer">
+  <img src="logo-sugar-tribe.png" alt="Sugar Tribe">
+  <span>SUGAR TRIBE RADIO</span>
+  <b>LA TUA ENERGIA, SEMPRE CON TE!</b>
+</footer>
+
+<!-- PANNELLO ADMIN -->
+<div class="admin-backdrop" id="adminBackdrop" hidden>
+  <section class="admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="admin-head">
+      <div>
+        <span class="eyebrow">CONTROL ROOM</span>
+        <h2 id="adminTitle">MODIFICA PALINSESTO</h2>
+        <p>Modifica gli orari direttamente dal browser.</p>
+      </div>
+      <button class="close-admin" id="closeAdmin" aria-label="Chiudi">×</button>
+    </div>
+
+    <div class="admin-actions">
+      <label>Giorno
+        <select id="adminDay"></select>
+      </label>
+      <button id="addShow" class="primary">＋ AGGIUNGI PROGRAMMA</button>
+      <button id="saveDay" class="save">✓ SALVA GIORNATA</button>
+    </div>
+
+    <div class="editor-list" id="editorList"></div>
+
+    <div class="admin-bottom">
+      <button id="resetDay" class="danger">↺ RIPRISTINA GIORNATA</button>
+      <button id="exportData" class="secondary">⬇ ESPORTA PALINSESTO</button>
+      <label class="import-label">⬆ IMPORTA
+        <input type="file" id="importData" accept=".json,application/json">
+      </label>
+      <span id="adminMessage"></span>
+    </div>
+
+    <div class="admin-note">
+      <strong>Nota:</strong> le modifiche vengono salvate nel browser tramite memoria locale.
+      Quindi restano disponibili su questo dispositivo/browser, ma non cambiano automaticamente
+      il palinsesto sugli altri telefoni o computer.
+    </div>
+  </section>
+</div>
+
+<audio id="radio" preload="none"></audio>
+<script src="script.js"></script>
+</body>
+</html>
