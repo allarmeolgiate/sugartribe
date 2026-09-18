@@ -186,3 +186,54 @@ footer img{width:110px} footer b{color:var(--cyan)}
 .whatsapp{border-color:rgba(81,255,153,.65);color:#51ff99}.email{border-color:rgba(255,34,212,.55);color:#ff5de0}
 #todayName{color:#27f4ff}
 @media(max-width:700px){.digital{font-size:27px}.contact small{font-size:8px}}
+
+
+/* ===== PLAYER / OROLOGIO / CONTATTI ===== */
+.clock-card{
+  display:flex;align-items:center;gap:12px;margin-top:18px;padding:12px 13px;
+  border:1px solid rgba(138,92,255,.55);border-radius:15px;
+  background:linear-gradient(145deg,rgba(30,15,75,.72),rgba(6,5,30,.8));
+  box-shadow:inset 0 0 20px rgba(74,45,255,.08)
+}
+.clock-icon{font-size:34px;color:var(--cyan);text-shadow:0 0 18px rgba(41,245,255,.5)}
+.digital{
+  font-family:"SFMono-Regular",Consolas,monospace;font-size:28px;font-weight:900;
+  letter-spacing:-1px;background:linear-gradient(90deg,var(--cyan),#fff,var(--pink));
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.date{font-size:8px;color:var(--cyan);font-weight:900;letter-spacing:.7px;margin-top:3px}
+.contacts{display:grid;gap:7px;margin-top:10px}
+.contact{
+  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;border:1px solid
+}
+.contact>span{font-size:20px}.contact div{flex:1;text-align:left}.contact b{display:block;font-size:9px;letter-spacing:1px}
+.contact small{display:block;font-size:9px;color:#fff;margin-top:2px;font-weight:800}.contact i{font-size:21px;font-style:normal}
+.whatsapp{border-color:rgba(92,255,157,.5);background:rgba(19,92,50,.12)}.whatsapp>span{color:var(--green)}
+.email{border-color:rgba(255,43,214,.45);background:rgba(95,12,84,.12)}.email>span{color:var(--pink)}
+.footer-contacts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%}
+.footer-contacts a{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:9px;color:#ddd9f5}
+
+/* ===== ADMIN NASCOSTO E PROTETTO ===== */
+.admin-trigger{
+  position:fixed;right:12px;bottom:10px;width:32px;height:32px;border-radius:50%;
+  background:rgba(5,3,26,.8);border:1px solid rgba(120,100,255,.25);color:#aaa;opacity:.16;z-index:60
+}
+.admin-trigger:hover{opacity:1;color:#fff}
+.admin-backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,8,.8);backdrop-filter:blur(12px);display:grid;place-items:center;padding:15px}
+.admin-backdrop[hidden]{display:none}
+.admin-panel{width:min(900px,100%);max-height:92vh;overflow:auto;background:#090622;border:1px solid rgba(138,88,255,.65);border-radius:22px;padding:23px;box-shadow:0 30px 100px #000}
+.close-admin{float:right;border:1px solid #554b91;background:#100c31;color:#fff;border-radius:10px;width:38px;height:38px;font-size:23px}
+.admin-panel h2{margin:7px 0}.admin-panel input,.admin-panel select{display:block;width:100%;max-width:430px;margin:13px 0;background:#050318;color:#fff;border:1px solid #403774;border-radius:10px;padding:12px}
+.admin-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:20px 0}.admin-toolbar select{width:auto;margin:0}
+.editor-row{display:grid;grid-template-columns:1fr 1.4fr 1fr 1fr 42px;gap:8px;padding:10px;border:1px solid rgba(73,85,255,.25);border-radius:12px;margin-bottom:8px}
+.editor-row input{margin:0;max-width:none;padding:9px}.editor-row label{font-size:8px;color:var(--muted)}
+.remove{height:40px;border:1px solid #ff3970;background:#2a0920;color:#ff91ae;border-radius:8px}
+.admin-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.admin-foot button,.admin-foot label{border:1px solid #4d458b;background:#100c31;color:#ddd7fa;border-radius:10px;padding:10px 13px;font-size:10px;font-weight:800}.admin-foot input{display:none}
+.admin-warning{border:1px solid rgba(255,180,0,.18);padding:10px;border-radius:10px;color:var(--muted);font-size:10px}
+#loginError{display:block;color:#ff6d91;font-size:10px;margin-top:8px}
+
+@media(max-width:680px){
+  .side{padding-top:15px}
+  .clock-card{justify-content:center}.digital{font-size:25px}.date{font-size:7px}
+  .contact small{font-size:8px}
+}

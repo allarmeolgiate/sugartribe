@@ -91,7 +91,7 @@ const DEFAULT_SCHEDULE = {
   ]
 };
 
-const STORAGE_KEY = "sugarTribeScheduleFinalV3";
+const STORAGE_KEY = "sugarTribeScheduleFinalV4";
 const ADMIN_PASSWORD = "SugarTribe2026"; // CAMBIA QUI LA PASSWORD PRIMA DI PUBBLICARE
 
 let schedule = loadSchedule();
@@ -118,12 +118,19 @@ function attr(v){return esc(v).replace(/`/g,"&#096;")}
 /* ---------- OROLOGIO DIGITALE ---------- */
 function updateClock(){
   const d=new Date();
-  document.getElementById("clock").textContent=d.toLocaleTimeString("it-IT",{hour12:false});
-  document.getElementById("date").textContent=d.toLocaleDateString("it-IT",{
+  const clockEl=document.getElementById("clock");
+  const dateEl=document.getElementById("date");
+  if(clockEl) clockEl.textContent=d.toLocaleTimeString("it-IT",{hour12:false});
+  if(dateEl) dateEl.textContent=d.toLocaleDateString("it-IT",{
     weekday:"long",day:"2-digit",month:"long",year:"numeric"
   }).toUpperCase();
-  if(selectedDay===getTodayName()) renderSchedule();
-  else document.getElementById("todayName").textContent=getTodayName();
+
+  const today=getTodayName();
+  if(selectedDay!==today){
+    selectedDay=today;
+    renderDays();
+  }
+  renderSchedule();
 }
 updateClock();
 setInterval(updateClock,1000);
@@ -166,7 +173,9 @@ function renderDays(){
 }
 function renderSchedule(){
   const today=getTodayName();
-  document.getElementById("todayName").textContent=today;
+  const todayEl=document.getElementById("todayName");
+  if(todayEl) todayEl.textContent=today;
+  if(!list) return;
   list.innerHTML="";
   (schedule[selectedDay]||[]).forEach((show,index)=>{
     const onAir=selectedDay===today && index===currentShowIndex(selectedDay);
@@ -198,7 +207,9 @@ function start(){
   radio.play().then(()=>{
     play.textContent="❚❚";
     status.textContent="LIVE";
-  }).catch(()=>status.textContent="STREAM ERROR");
+  }).catch(()=>{
+    status.textContent="STREAM ERROR";
+  });
 }
 play.onclick=()=>radio.paused?start():radio.pause();
 pause.onclick=()=>radio.pause();
@@ -227,32 +238,38 @@ bars("wave",62,40);
 function setTrack(title){
   const raw=String(title||"").replace(/\s+/g," ").trim();
   if(!raw)return;
+
+  let artist="Sugar Tribe Radio", song=raw;
   const parts=raw.split(/\s+-\s+/);
-  const artist=parts.length>1?parts[0]:"Sugar Tribe Radio";
-  const song=parts.length>1?parts.slice(1).join(" - "):raw;
-  document.getElementById("circleSong").textContent=song;
-  document.getElementById("circleArtist").textContent=artist;
-  document.getElementById("song").textContent=song;
-  document.getElementById("artist").textContent=artist;
-  document.getElementById("sideSong").textContent=song;
-  document.getElementById("sideArtist").textContent=artist;
+  if(parts.length>1){
+    artist=parts[0];
+    song=parts.slice(1).join(" - ");
+  }
+
+  const map=[
+    ["circleSong",song],["circleArtist",artist],
+    ["song",song],["artist",artist],
+    ["sideSong",song],["sideArtist",artist]
+  ];
+  map.forEach(([id,value])=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=value;
+  });
 }
-async function tryJSON(url){
-  const r=await fetch(url,{cache:"no-store"});
-  if(!r.ok)throw new Error();
-  return await r.json();
-}
+
 async function updateNowPlaying(){
   const endpoints=[
     "https://eu8.fastcast4u.com/status-json.xsl",
     "https://eu8.fastcast4u.com/stats?sid=1&json=1"
   ];
+
   for(const url of endpoints){
     try{
       const data=await tryJSON(url);
       const source=data?.icestats?.source || data?.source;
       const src=Array.isArray(source)?source[0]:source;
-      const title=src?.title || src?.songtitle || data?.title || data?.songtitle;
+      const title=src?.title || src?.songtitle || src?.current_song ||
+                  data?.title || data?.songtitle || data?.current_song;
       if(title){setTrack(title);return;}
     }catch(e){}
   }
