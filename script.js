@@ -200,7 +200,8 @@ const status=document.getElementById("status");
 const volume=document.getElementById("volume");
 const vol=document.getElementById("vol");
 
-const STREAM_URL="https://eu8.fastcast4u.com/start/gigamarvi";
+const STREAM_URL="https://eu8.fastcast4u.com/proxy/gigamarvi?mp=/1";
+const WEBPLAYER_URL="https://eu8.fastcast4u.com/start/gigamarvi/";
 radio.src=STREAM_URL;
 radio.preload="none";
 radio.volume=.75;
@@ -221,7 +222,10 @@ if(pause)pause.onclick=()=>radio.pause();
 if(reload)reload.onclick=async()=>{radio.pause();radio.src=STREAM_URL;radio.load();await start()};
 radio.onplaying=()=>{setStatus("LIVE");if(play)play.textContent="❚❚"};
 radio.onpause=()=>{setStatus("PAUSA");if(play)play.textContent="▶"};
-radio.onerror=()=>setStatus("STREAM NON DISPONIBILE");
+radio.onerror=()=>{setStatus("STREAM NON DISPONIBILE");};
+radio.onstalled=()=>setStatus("CONNESSIONE...");
+radio.onwaiting=()=>setStatus("BUFFERING...");
+radio.oncanplay=()=>{ if(!radio.paused) setStatus("LIVE"); };
 if(volume)volume.oninput=()=>{radio.volume=+volume.value;if(vol)vol.textContent=Math.round(radio.volume*100)+"%"};vol.textContent=Math.round(radio.volume*100)+"%"};
 
 /* ---------- VISUALIZER ---------- */

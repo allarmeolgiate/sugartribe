@@ -268,3 +268,5 @@ footer img{width:110px} footer b{color:var(--cyan)}
   .clock-card .date{font-size:8px}
   .contacts{grid-template-columns:1fr 1fr}
 }
+
+.external-player{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:inherit;}
