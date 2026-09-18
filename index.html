@@ -17,7 +17,8 @@
 <div class="modal" id="modal" hidden><div class="modalbox"><button class="close" id="close">×</button><div id="login"><span class="eyebrow">CONTROL ROOM</span><h2>MODIFICA PALINSESTO</h2><input id="pwd" type="password" placeholder="Password"><button class="primary" id="loginBtn">ACCEDI</button><p id="err"></p></div><div id="editor" hidden><h2>MODIFICA PALINSESTO</h2><div class="adminbar"><select id="adminDay"></select><button id="add">＋ AGGIUNGI</button><button id="save">✓ SALVA</button></div><div id="editorList"></div></div></div></div>
 <audio id="radio" preload="none"></audio>
 <script>
-const STREAM_URL='https://eu8.fastcast4u.com/stream/gigamarvi';
+const STREAM_URL='http://eu8.fastcast4u.com:2682/;stream.mp3';
+const STREAM_PROXY='https://eu8.fastcast4u.com/stream/gigamarvi/stream.pls';
 
 const DEFAULT={}; const shows=[['06:00 – 09:00','Good Morning SugarTribe','Marco & Giulia','MUSICA & ENERGIA'],['09:00 – 11:00','The Breakfast Show','Luca B.','HITS & NEWS'],['11:00 – 13:00','Feel Good Vibes','Sara','POP & DANCE'],['13:00 – 15:00','Urban Tribe','Alex','HIP HOP & R&B'],['15:00 – 17:00','Music Evolution','Martina','HOUSE & EDM'],['17:00 – 19:00','Sunset Vibes','Fabio','CHILL & LOUNGE'],['19:00 – 21:00','Rock Tribe','Diego','ROCK CLASSICS'],['21:00 – 23:00','Night Vibes','Claudia','ELECTRONIC'],['23:00 – 01:00','Deep House Journey','Stefano','DEEP HOUSE'],['01:00 – 06:00','Notte SugarTribe','Max','ELECTRONIC & CHILL']];['LUNEDÌ','MARTEDÌ','MERCOLEDÌ','GIOVEDÌ','VENERDÌ','SABATO','DOMENICA'].forEach(d=>DEFAULT[d]=shows.map(x=>[...x]));
 let schedule=JSON.parse(localStorage.getItem('sugarTribeScheduleV7')||'null')||DEFAULT; let selected=today();
@@ -26,12 +27,29 @@ function renderDays(){const box=$('days');box.innerHTML='';Object.keys(schedule)
 function mins(s){let p=s.split(':').map(Number);return p[0]*60+p[1]};function onair(s){let m=s[0].match(/(\d\d?:\d\d).*?(\d\d?:\d\d)/);if(!m)return false;let a=mins(m[1]),b=mins(m[2]),n=new Date(),c=n.getHours()*60+n.getMinutes();return b>a?c>=a&&c<b:c>=a||c<b}
 function renderRows(){let box=$('rows');box.innerHTML='';let cur=today(),arr=schedule[selected]||[];arr.forEach((s,i)=>{let live=selected===cur&&onair(s);let r=document.createElement('div');r.className='row'+(live?' live':'');r.innerHTML='<div class="time">'+s[0]+'</div><div class="prog">'+s[1]+'<small>Con '+s[2]+'</small></div><div class="genre">'+s[3]+'</div>'+(live?'<div class="badge">IN ONDA</div>':'');box.appendChild(r)})}
 function clock(){let d=new Date();$('clock').textContent=d.toLocaleTimeString('it-IT',{hour12:false});$('date').textContent=d.toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}).toUpperCase();if(selected!==today()){selected=today();renderDays()}renderRows()}setInterval(clock,1000);clock();
-function bars(id,n){for(let i=0;i<n;i++){let e=document.createElement('i');e.style.height=(4+Math.random()*30)+'px';e.style.animationDelay=(-Math.random())+'s';$(id).appendChild(e)}}bars('eq',25);bars('wave',55);
-const radio=$('radio'),status=$('status');radio.src=STREAM_URL;radio.volume=.75;
-async function start(){status.textContent='CONNESSIONE...';try{await radio.play();status.textContent='LIVE'}catch(e){status.textContent='STREAM NON DISPONIBILE — CONTROLLA IL COLLEGAMENTO';}}
-$('play').onclick=()=>radio.paused?start():radio.pause();$('pause').onclick=()=>radio.pause();$('reload').onclick=()=>{radio.pause();radio.src=STREAM_URL+'#'+Date.now();radio.load();start()};$('volume').oninput=e=>{radio.volume=+e.target.value;$('vol').textContent=Math.round(radio.volume*100)+'%'};radio.onplaying=()=>status.textContent='LIVE';radio.onerror=()=>status.textContent='STREAM NON DISPONIBILE — CONTROLLA IL COLLEGAMENTO';
-// Metadata: solo se il server lo permette. Il player non dipende da questa funzione.
-async function metadata(){for(const u of ['https://eu8.fastcast4u.com/status-json.xsl','https://eu8.fastcast4u.com/stats?sid=1&json=1'])try{let r=await fetch(u,{cache:'no-store'});if(!r.ok)continue;let d=await r.json();let s=d?.icestats?.source||d?.source;if(Array.isArray(s))s=s[0];let t=s?.title||s?.songtitle||s?.current_song;if(t){let p=t.split(/\s+-\s+/);let a=p.length>1?p[0]:'Sugar Tribe Radio',song=p.length>1?p.slice(1).join(' - '):t;['circleSong','song','sideSong'].forEach(id=>$(id).textContent=song);['circleArtist','artist','sideArtist'].forEach(id=>$(id).textContent=a);return}}catch(e){}}metadata();setInterval(metadata,15000);
+function bars(id,n){const box=$(id);if(!box)return;for(let i=0;i<n;i++){let e=document.createElement('i');e.style.height=(4+Math.random()*30)+'px';e.style.animationDelay=(-Math.random())+'s';box.appendChild(e)}}bars('wave',55);
+const radio=$('radio'),status=$('status');
+radio.src=STREAM_URL;radio.volume=.75;
+async function start(){
+  status.textContent='CONNESSIONE...';
+  try{
+    if(!radio.src) radio.src=STREAM_URL;
+    await radio.play();
+    status.textContent='LIVE';
+  }catch(e){
+    status.textContent='ERRORE STREAM — PROVA A RIAPRIRE IL FILE';
+    console.error('SUGAR TRIBE STREAM ERROR',e);
+  }
+}
+$('play').onclick=()=>{if(radio.paused) start(); else radio.pause()};
+$('pause').onclick=()=>radio.pause();
+$('reload').onclick=()=>{radio.pause();radio.src=STREAM_URL+'?nocache='+Date.now();radio.load();start()};
+$('volume').oninput=e=>{radio.volume=+e.target.value;$('vol').textContent=Math.round(radio.volume*100)+'%'};
+radio.onplaying=()=>status.textContent='LIVE';
+radio.onpause=()=>{if(!radio.ended)status.textContent='PAUSA'};
+radio.onerror=()=>status.textContent='ERRORE STREAM — IL SERVER NON ACCETTA IL COLLEGAMENTO';
+// Metadata opzionale: se il server abilita CORS, aggiorna il titolo; il player non dipende da questa funzione.
+async function metadata(){for(const u of ['https://eu8.fastcast4u.com/status-json.xsl','https://eu8.fastcast4u.com/stats?sid=1&json=1'])try{let r=await fetch(u,{cache:'no-store'});if(!r.ok)continue;let d=await r.json();let s=d?.icestats?.source||d?.source;if(Array.isArray(s))s=s[0];let t=s?.title||s?.songtitle||s?.current_song;if(t){let p=t.split(/\s+-\s+/);let a=p.length>1?p[0]:'Sugar Tribe Radio',song=p.length>1?p.slice(1).join(' - '):t;['song','sideSong'].forEach(id=>{if($(id))$(id).textContent=song});['artist','sideArtist'].forEach(id=>{if($(id))$(id).textContent=a});return}}catch(e){}}metadata();setInterval(metadata,15000);
 $('toggleSchedule').onclick=()=>{let b=$('scheduleBox'),hide=b.style.display==='none';b.style.display=hide?'block':'none';$('toggleSchedule').textContent=hide?'NASCONDI':'MOSTRA PALINSESTO'};
 $('menu').onclick=()=>$('header').classList.toggle('open');document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>{ $('header').classList.remove('open') });
 // Admin locale
