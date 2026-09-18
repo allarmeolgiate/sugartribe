@@ -46,7 +46,6 @@
             background-attachment: fixed;
         }
 
-        /* Container Principale */
         .container {
             width: 92%;
             max-width: 1200px;
@@ -54,7 +53,7 @@
             padding: 20px 0;
         }
 
-        /* Navbar / Header */
+        /* Header */
         header {
             display: flex;
             justify-content: space-between;
@@ -108,7 +107,7 @@
             text-shadow: 0 0 8px var(--cyan-glow);
         }
 
-        /* SEZIONE HERO & PLAYER ALTO */
+        /* Hero Player */
         .hero-player-section {
             margin-top: 20px;
             margin-bottom: 40px;
@@ -165,7 +164,6 @@
             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* Canvas Spettro Audio */
         .visualizer-container {
             width: 100%;
             height: 140px;
@@ -183,7 +181,6 @@
             display: block;
         }
 
-        /* Controlli Player Audio */
         .player-controls {
             display: flex;
             justify-content: center;
@@ -251,7 +248,6 @@
             box-shadow: 0 0 10px var(--green-neon);
         }
 
-        /* Orologio & Data Futuristica */
         .clock-container {
             margin-top: 20px;
             padding-top: 20px;
@@ -279,7 +275,7 @@
             text-transform: uppercase;
         }
 
-        /* SEZIONE PALINSESTO */
+        /* Palinsesto */
         .schedule-section {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -311,7 +307,6 @@
             color: var(--orange-energy);
         }
 
-        /* Tab Giorni */
         .days-tabs {
             display: flex;
             gap: 10px;
@@ -339,7 +334,6 @@
             box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
         }
 
-        /* Griglia Palinsesto */
         .schedule-list {
             display: flex;
             flex-direction: column;
@@ -404,7 +398,6 @@
             background: #e11d48;
         }
 
-        /* Bottoni Admin/Sblocco */
         .admin-auth-bar {
             display: flex;
             align-items: center;
@@ -445,7 +438,7 @@
             color: #000;
         }
 
-        /* SEZIONE CONTATTI RAPIDI */
+        /* Contatti */
         .contacts-section {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -503,7 +496,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 20px;
@@ -512,40 +504,19 @@
             font-size: 0.9rem;
         }
 
-        /* Responsive Smartphone */
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .digital-clock {
-                font-size: 2.2rem;
-            }
-
-            .schedule-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-
-            .time-badge {
-                min-width: auto;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+            header { flex-direction: column; gap: 15px; }
+            .digital-clock { font-size: 2.2rem; }
+            .schedule-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .time-badge { min-width: auto; }
+            .section-header { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header / Navigazione -->
     <header>
         <div class="logo-container">
-            <!-- Utilizza il file caricato o carica logo sugartribe.png nello stesso folder -->
             <img src="logo sugartribe.png" alt="RADIO SUGAR TRIBE" class="logo-img" onerror="this.src='https://via.placeholder.com/200x60/0d1527/00f0ff?text=RADIO+SUGAR+TRIBE'">
         </div>
         <nav>
@@ -557,18 +528,15 @@
 
     <div class="container">
 
-        <!-- 1. HERO & PLAYER AUDIO IN ALTO -->
         <section id="player" class="hero-player-section">
             <div class="live-badge">
                 <div class="live-dot"></div> On Air Live
             </div>
 
-            <!-- Visualizzatore Frequenze Audio a Ritmo -->
             <div class="visualizer-container">
                 <canvas id="audioVisualizer"></canvas>
             </div>
 
-            <!-- Controlli Player Audio -->
             <div class="player-controls">
                 <button id="playPauseBtn" class="btn-play-pause" title="Riproduci / Pausa">
                     <i class="fa-solid fa-play" id="playIcon"></i>
@@ -580,17 +548,18 @@
                 </div>
             </div>
 
-            <!-- Elemento Audio Streaming -->
-            <audio id="radioStream" crossorigin="anonymous" src="https://eu8.fastcast4u.com/start/gigamarvi"></audio>
+            <!-- Audio Player con fallback flussi Fastcast4u -->
+            <audio id="radioStream" preload="none">
+                <source src="https://eu8.fastcast4u.com/start/gigamarvi" type="audio/mpeg">
+                <source src="http://eu8.fastcast4u.com:8012/;" type="audio/mpeg">
+            </audio>
 
-            <!-- Orologio e Data Futuristica sotto al Player -->
             <div class="clock-container">
                 <div class="digital-clock" id="clock">00:00:00</div>
                 <div class="digital-date" id="date">Lunedì 1 Gennaio 2026</div>
             </div>
         </section>
 
-        <!-- 2. SEZIONE PALINSESTO GIORNALIERO (PROTEGGI CON PASSWORD) -->
         <section id="palinsesto" class="schedule-section">
             <div class="section-header">
                 <div class="section-title">
@@ -602,44 +571,36 @@
                 </div>
             </div>
 
-            <!-- Tab per i giorni della settimana -->
-            <div class="days-tabs">
-                <button class="day-btn active" onclick="selectDay('Lunedì', this)">Lunedì</button>
-                <button class="day-btn" onclick="selectDay('Martedì', this)">Martedì</button>
-                <button class="day-btn" onclick="selectDay('Mercoledì', this)">Mercoledì</button>
-                <button class="day-btn" onclick="selectDay('Giovedì', this)">Giovedì</button>
-                <button class="day-btn" onclick="selectDay('Venerdì', this)">Venerdì</button>
-                <button class="day-btn" onclick="selectDay('Sabato', this)">Sabato</button>
-                <button class="day-btn" onclick="selectDay('Domenica', this)">Domenica</button>
+            <div class="days-tabs" id="daysTabs">
+                <button class="day-btn" data-day="Lunedì" onclick="selectDay('Lunedì', this)">Lunedì</button>
+                <button class="day-btn" data-day="Martedì" onclick="selectDay('Martedì', this)">Martedì</button>
+                <button class="day-btn" data-day="Mercoledì" onclick="selectDay('Mercoledì', this)">Mercoledì</button>
+                <button class="day-btn" data-day="Giovedì" onclick="selectDay('Giovedì', this)">Giovedì</button>
+                <button class="day-btn" data-day="Venerdì" onclick="selectDay('Venerdì', this)">Venerdì</button>
+                <button class="day-btn" data-day="Sabato" onclick="selectDay('Sabato', this)">Sabato</button>
+                <button class="day-btn" data-day="Domenica" onclick="selectDay('Domenica', this)">Domenica</button>
             </div>
 
-            <!-- Lista spettacoli -->
-            <div class="schedule-list" id="scheduleContainer">
-                <!-- Generato via JavaScript -->
-            </div>
+            <div class="schedule-list" id="scheduleContainer"></div>
         </section>
 
-        <!-- 3. SEZIONE CONTATTI RAPIDI -->
         <section id="contatti" class="contacts-section">
             <div class="section-title">
                 <i class="fa-solid fa-comments"></i> Contatta la Regia
             </div>
             <div class="contact-grid">
-                <!-- Tasto WhatsApp -->
                 <a href="https://wa.me/393475137319" target="_blank" class="contact-card whatsapp">
                     <i class="fa-brands fa-whatsapp"></i>
                     <h3>WhatsApp</h3>
                     <p>+39 347 513 7319</p>
                 </a>
 
-                <!-- Tasto Email -->
                 <a href="mailto:radiosugarfree@gmail.com" class="contact-card email">
                     <i class="fa-solid fa-envelope"></i>
                     <h3>Email</h3>
                     <p>radiosugarfree@gmail.com</p>
                 </a>
 
-                <!-- Tasto Chiama Direct -->
                 <a href="tel:3475137319" class="contact-card call">
                     <i class="fa-solid fa-phone"></i>
                     <h3>Chiama Ora</h3>
@@ -650,14 +611,15 @@
 
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2026 RADIO SUGAR TRIBE - La Tua Energia. Tutti i diritti riservati.</p>
     </footer>
 
-    <!-- LOGICA JAVASCRIPT INTEGRATA -->
     <script>
-        /* --- 1. OROLOGIO E DATA --- */
+        /* --- 1. OROLOGIO E SELEZIONE GIORNO AUTOMATICO --- */
+        const daysMap = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+        let currentDay = daysMap[new Date().getDay()];
+
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -672,7 +634,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        /* --- 2. CONTROLLI AUDIO & VISUALIZER --- */
+        /* --- 2. CONTROLLI AUDIO & VISUALIZER FIX --- */
         const audio = document.getElementById('radioStream');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const playIcon = document.getElementById('playIcon');
@@ -686,14 +648,17 @@
 
         function initAudioContext() {
             if (isAudioSetup) return;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            source = audioCtx.createMediaElementSource(audio);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            analyser.fftSize = 64;
-            isAudioSetup = true;
-            drawVisualizer();
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                analyser.fftSize = 64;
+                isAudioSetup = true;
+            } catch (e) {
+                console.log("Visualizer isolato per restrizioni CORS/AudioContext");
+            }
         }
 
         playPauseBtn.addEventListener('click', () => {
@@ -703,8 +668,20 @@
             }
 
             if (audio.paused) {
-                audio.play();
-                playIcon.className = 'fa-solid fa-pause';
+                // Ricarica il flusso live per evitare buffer fermi
+                audio.load();
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        playIcon.className = 'fa-solid fa-pause';
+                    }).catch(error => {
+                        console.log("Errore riproduzione:", error);
+                        // Tentativo con URL alternativo in streaming diretto
+                        audio.src = "https://eu8.fastcast4u.com/start/gigamarvi";
+                        audio.play();
+                        playIcon.className = 'fa-solid fa-pause';
+                    });
+                }
             } else {
                 audio.pause();
                 playIcon.className = 'fa-solid fa-play';
@@ -722,7 +699,6 @@
             }
         });
 
-        /* Visualizzatore Dinamico */
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             const width = canvas.width = canvas.clientWidth;
@@ -730,8 +706,7 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            if (!isAudioSetup) {
-                // Linea statica quando l'audio non è avviato
+            if (!isAudioSetup || audio.paused) {
                 ctx.beginPath();
                 ctx.moveTo(0, height / 2);
                 ctx.lineTo(width, height / 2);
@@ -765,37 +740,18 @@
         }
         drawVisualizer();
 
-        /* --- 3. GESTIONE PALINSESTO & ADMIN --- */
+        /* --- 3. PALINSESTO & ADMIN --- */
         let isAdmin = false;
-        let adminPassword = "sugartribe2026"; // Password di default
-        let currentDay = "Lunedì";
+        let adminPassword = "sugartribe2026";
 
-        // Dati Iniziali Palinsesto
         let scheduleData = JSON.parse(localStorage.getItem('sugarTribeSchedule')) || {
-            "Lunedì": [
-                { id: 1, time: "07:00 - 09:00", name: "Sugar Morning Tribe", dj: "DJ Alex & Sara" },
-                { id: 2, time: "14:00 - 16:00", name: "Energy Zone", dj: "Marco Techno" },
-                { id: 3, time: "21:00 - 23:00", name: "Night Tribal Beats", dj: "Guest DJ" }
-            ],
-            "Martedì": [
-                { id: 4, time: "08:00 - 10:00", name: "Wake Up Tribe", dj: "DJ Chris" },
-                { id: 5, time: "18:00 - 20:00", name: "Sunset Vibes", dj: "Elena M" }
-            ],
-            "Mercoledì": [
-                { id: 6, time: "12:00 - 14:00", name: "Midday Break", dj: "Staff Sugar Tribe" }
-            ],
-            "Giovedì": [
-                { id: 7, time: "16:00 - 18:00", name: "Deep Energy", dj: "Leo Noise" }
-            ],
-            "Venerdì": [
-                { id: 8, time: "22:00 - 02:00", name: "Friday Tribal Party", dj: "Resident Masters" }
-            ],
-            "Sabato": [
-                { id: 9, time: "15:00 - 19:00", name: "Weekend Chart 40", dj: "Luca Mix" }
-            ],
-            "Domenica": [
-                { id: 10, time: "10:00 - 13:00", name: "Chillout Tribe", dj: "Relax Crew" }
-            ]
+            "Lunedì": [{ time: "07:00 - 09:00", name: "Sugar Morning Tribe", dj: "DJ Alex & Sara" }],
+            "Martedì": [{ time: "08:00 - 10:00", name: "Wake Up Tribe", dj: "DJ Chris" }],
+            "Mercoledì": [{ time: "12:00 - 14:00", name: "Midday Break", dj: "Staff Sugar Tribe" }],
+            "Giovedì": [{ time: "16:00 - 18:00", name: "Deep Energy", dj: "Leo Noise" }],
+            "Venerdì": [{ time: "22:00 - 02:00", name: "Friday Tribal Party", dj: "Resident Masters" }],
+            "Sabato": [{ time: "15:00 - 19:00", name: "Weekend Chart 40", dj: "Luca Mix" }],
+            "Domenica": [{ time: "10:00 - 13:00", name: "Chillout Tribe", dj: "Relax Crew" }]
         };
 
         function renderSchedule() {
@@ -805,7 +761,7 @@
             const list = scheduleData[currentDay] || [];
 
             if (list.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 20px; color: rgba(255,255,255,0.5);">Nessun programma presente per ${currentDay}.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: rgba(255,255,255,0.5);">Nessun programma in palinsesto per ${currentDay}.</div>`;
                 return;
             }
 
@@ -831,18 +787,22 @@
         function selectDay(day, btn) {
             currentDay = day;
             document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            if(btn) {
+                btn.classList.add('active');
+            } else {
+                const autoBtn = document.querySelector(`.day-btn[data-day="${day}"]`);
+                if(autoBtn) autoBtn.classList.add('active');
+            }
             renderSchedule();
         }
 
         function toggleAdmin() {
             if (!isAdmin) {
-                const pass = prompt("Inserisci la password per accedere alla Regia:");
+                const pass = prompt("Inserisci la password della Regia:");
                 if (pass === adminPassword) {
                     isAdmin = true;
                     document.getElementById('adminToggleBtn').innerHTML = '<i class="fa-solid fa-lock-open"></i> Blocco Regia';
                     document.getElementById('addShowBtn').style.display = 'inline-block';
-                    alert("Autenticazione riuscita! Ora puoi aggiungere ed eliminare gli show.");
                 } else if(pass !== null) {
                     alert("Password errata!");
                 }
@@ -864,27 +824,23 @@
             if (!dj) return;
 
             if (!scheduleData[currentDay]) scheduleData[currentDay] = [];
-            scheduleData[currentDay].push({ id: Date.now(), time, name, dj });
+            scheduleData[currentDay].push({ time, name, dj });
 
-            saveSchedule();
+            localStorage.setItem('sugarTribeSchedule', JSON.stringify(scheduleData));
             renderSchedule();
         }
 
         function deleteShow(index) {
             if (!isAdmin) return;
-            if (confirm("Sei sicuro di voler eliminare questo programma dal palinsesto?")) {
+            if (confirm("Sei sicuro di voler eliminare questo programma?")) {
                 scheduleData[currentDay].splice(index, 1);
-                saveSchedule();
+                localStorage.setItem('sugarTribeSchedule', JSON.stringify(scheduleData));
                 renderSchedule();
             }
         }
 
-        function saveSchedule() {
-            localStorage.setItem('sugarTribeSchedule', JSON.stringify(scheduleData));
-        }
-
-        // Inizializza visualizzazione
-        renderSchedule();
+        // Imposta automaticamente il giorno della settimana corrente
+        selectDay(currentDay, null);
     </script>
 </body>
 </html>
