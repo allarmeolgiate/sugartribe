@@ -237,3 +237,34 @@ footer img{width:110px} footer b{color:var(--cyan)}
   .clock-card{justify-content:center}.digital{font-size:25px}.date{font-size:7px}
   .contact small{font-size:8px}
 }
+
+/* ===== V5: CONTATTI NEL MENU + OROLOGIO DIGITALE A DESTRA ===== */
+.header nav{align-items:center}
+.contact-menu{position:relative}
+.contact-menu-btn{border:0;background:none;color:inherit;font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer;padding:8px 0}
+.contact-menu-btn:hover{color:var(--cyan)}
+.contact-dropdown{display:none;position:absolute;right:0;top:38px;min-width:170px;padding:7px;border:1px solid rgba(73,85,255,.6);border-radius:13px;background:rgba(7,5,30,.98);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:80}
+.contact-dropdown.open{display:grid;gap:5px}
+.menu-contact{display:block;padding:11px 12px;border-radius:9px;font-size:10px;font-weight:900;letter-spacing:.7px}
+.menu-contact.whatsapp{color:var(--green);background:rgba(81,255,153,.08)}
+.menu-contact.email{color:var(--pink);background:rgba(255,34,212,.08)}
+
+.clock-card{display:block;text-align:center;padding:15px 10px;margin-top:18px}
+.clock-card .digital{font-size:42px;line-height:1;letter-spacing:2px}
+.clock-card .date{margin-top:7px;font-size:9px;letter-spacing:1px}
+.contacts{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.contact{justify-content:center;padding:12px 10px;gap:8px}
+.contact b{font-size:9px;letter-spacing:1px}
+.contact i{margin-left:auto}
+.footer-contacts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%}
+.footer-contact{border:1px solid rgba(73,85,255,.4);border-radius:10px;padding:9px 14px;font-size:9px;font-weight:900;letter-spacing:.7px}
+.footer-contact.whatsapp{color:var(--green)} .footer-contact.email{color:var(--pink)}
+
+@media(max-width:700px){
+  .header nav{gap:5px}
+  .contact-menu-btn{font-size:11px}
+  .contact-dropdown{position:fixed;top:67px;right:10px;min-width:170px}
+  .clock-card .digital{font-size:34px}
+  .clock-card .date{font-size:8px}
+  .contacts{grid-template-columns:1fr 1fr}
+}

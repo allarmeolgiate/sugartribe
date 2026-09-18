@@ -91,7 +91,7 @@ const DEFAULT_SCHEDULE = {
   ]
 };
 
-const STORAGE_KEY = "sugarTribeScheduleFinalV4";
+const STORAGE_KEY = "sugarTribeScheduleFinalV5";
 const ADMIN_PASSWORD = "SugarTribe2026"; // CAMBIA QUI LA PASSWORD PRIMA DI PUBBLICARE
 
 let schedule = loadSchedule();
@@ -200,24 +200,29 @@ const status=document.getElementById("status");
 const volume=document.getElementById("volume");
 const vol=document.getElementById("vol");
 
-radio.src="https://eu8.fastcast4u.com/proxy/gigamarvi?mp=/1";
+const STREAM_URL="https://eu8.fastcast4u.com/start/gigamarvi";
+radio.src=STREAM_URL;
+radio.preload="none";
 radio.volume=.75;
 
-function start(){
-  radio.play().then(()=>{
-    play.textContent="❚❚";
-    status.textContent="LIVE";
-  }).catch(()=>{
-    status.textContent="STREAM ERROR";
-  });
+function setStatus(t){if(status)status.textContent=t}
+async function start(){
+  try{
+    if(!radio.src || radio.src!==STREAM_URL) radio.src=STREAM_URL;
+    await radio.play();
+    if(play)play.textContent="❚❚";
+    setStatus("LIVE");
+  }catch(e){
+    setStatus("CLICCA PLAY");
+  }
 }
-play.onclick=()=>radio.paused?start():radio.pause();
-pause.onclick=()=>radio.pause();
-reload.onclick=()=>{radio.load();start()};
-radio.onplaying=()=>{status.textContent="LIVE";play.textContent="❚❚"};
-radio.onpause=()=>{status.textContent="PAUSED";play.textContent="▶"};
-radio.onerror=()=>status.textContent="ERROR";
-volume.oninput=()=>{radio.volume=+volume.value;vol.textContent=Math.round(radio.volume*100)+"%"};
+if(play)play.onclick=()=>radio.paused?start():radio.pause();
+if(pause)pause.onclick=()=>radio.pause();
+if(reload)reload.onclick=async()=>{radio.pause();radio.src=STREAM_URL;radio.load();await start()};
+radio.onplaying=()=>{setStatus("LIVE");if(play)play.textContent="❚❚"};
+radio.onpause=()=>{setStatus("PAUSA");if(play)play.textContent="▶"};
+radio.onerror=()=>setStatus("STREAM NON DISPONIBILE");
+if(volume)volume.oninput=()=>{radio.volume=+volume.value;if(vol)vol.textContent=Math.round(radio.volume*100)+"%"};vol.textContent=Math.round(radio.volume*100)+"%"};
 
 /* ---------- VISUALIZER ---------- */
 function bars(id,n,max){
@@ -369,6 +374,18 @@ function persistImported(){localStorage.setItem(STORAGE_KEY,JSON.stringify(sched
 /* ---------- MENU SMARTPHONE ---------- */
 document.getElementById("menuToggle").onclick=()=>document.querySelector(".header").classList.toggle("nav-open");
 document.querySelectorAll(".header nav a").forEach(a=>a.onclick=()=>document.querySelector(".header").classList.remove("nav-open"));
+
+/* ---------- MENU CONTATTI ---------- */
+const contactMenuBtn=document.getElementById("contactMenuBtn");
+const contactDropdown=document.getElementById("contactDropdown");
+if(contactMenuBtn){
+  contactMenuBtn.onclick=(e)=>{
+    e.stopPropagation();
+    contactDropdown.classList.toggle("open");
+  };
+  document.addEventListener("click",()=>contactDropdown?.classList.remove("open"));
+  contactDropdown?.addEventListener("click",e=>e.stopPropagation());
+}
 
 renderDays();
 renderSchedule();
